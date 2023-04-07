@@ -1,4 +1,4 @@
-module tokenize-split
+module github.com/u1and0/tokenize-split
 
 go 1.19
 

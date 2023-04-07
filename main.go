@@ -21,6 +21,20 @@ import (
 func main() {
 	// parse command-line flags
 	numTokens := flag.Int("n", 4096, "maximum number of tokens per file")
+	flag.Usage = func() {
+		usageTxt := `tokenize-split is a command-line tool that tokenizes input text
+and splits it into multiple files, with each file containing
+a maximum number of tokens specified by the user.
+
+Usage of tokenize-split:
+$ cat too-long-text.txt | tokenize-split -n 4096
+
+Options:
+-n int
+	  maximum number of tokens per file (default 4096)
+`
+		fmt.Fprintf(os.Stderr, "%s\n", usageTxt)
+	}
 	flag.Parse()
 
 	// read input text from stdin
