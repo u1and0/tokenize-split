@@ -16,7 +16,7 @@ $ go install github.com/u1and0/tokenize-split@latest
 ## Usage
 
 ```
-$ cat input.txt | tokenize-split -n 4096
+$ cat input.txt | tokenize-split -n 4096 -m gpt-3.5-turbo -v
 ```
 
 This command reads input text from `stdin`, tokenizes it using OpenAI's GPT-3 tokenizer, and splits it into multiple files, each containing at most 4096 tokens. The resulting files are saved in the current directory with names like `tokenized_0.txt`, `tokenized_1.txt`, etc.
@@ -26,6 +26,8 @@ This command reads input text from `stdin`, tokenizes it using OpenAI's GPT-3 to
 The following options are available:
 
 - `-n <num_tokens>`: Maximum number of tokens per file. Defaults to 4096.
+- `-m <model_name>`: ChatGPT Model name. Defaults to "gpt-3.5-turbo".
+- `-v`: Show tokens size and file name.
 
 ## License
 

@@ -12,7 +12,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/pkoukk/tiktoken-go"
@@ -21,6 +21,8 @@ import (
 func main() {
 	// parse command-line flags
 	numTokens := flag.Int("n", 4096, "maximum number of tokens per file")
+	modelName := flag.String("m", "gpt-3.5-turbo", "model name")
+	verboseMode := flag.Bool("v", false, "show tokens size and file name")
 	flag.Usage = func() {
 		usageTxt := `tokenize-split is a command-line tool that tokenizes input text
 and splits it into multiple files, with each file containing
@@ -30,23 +32,25 @@ Usage of tokenize-split:
 $ cat too-long-text.txt | tokenize-split -n 4096
 
 Options:
+-m string
+	model name (default "gpt-3.5-turbo")
 -n int
-	  maximum number of tokens per file (default 4096)
+	maximum number of tokens per file (default 4096)
+-v    show tokens size and file name
 `
 		fmt.Fprintf(os.Stderr, "%s\n", usageTxt)
 	}
 	flag.Parse()
 
 	// read input text from stdin
-	input, err := ioutil.ReadAll(os.Stdin)
+	input, err := io.ReadAll(os.Stdin)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "error reading input:", err)
 		os.Exit(1)
 	}
 
 	// initialize tiktoken-go
-	encoding := "cl100k_base"
-	enc, err := tiktoken.GetEncoding(encoding)
+	enc, err := tiktoken.EncodingForModel(*modelName)
 	if err != nil {
 		err = fmt.Errorf("getEncoding: %v", err)
 		return
@@ -69,10 +73,13 @@ Options:
 		filename := fmt.Sprintf("tokenized_%d.txt", i)
 		chunk := tokens[start:end]
 		text := enc.Decode(chunk)
-		err := ioutil.WriteFile(filename, []byte(text), 0644)
+		err := os.WriteFile(filename, []byte(text), 0644)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "error writing chunk to file:", err)
 			os.Exit(1)
+		}
+		if *verboseMode {
+			fmt.Println(end-start, filename)
 		}
 	}
 }
