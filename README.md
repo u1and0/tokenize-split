@@ -8,7 +8,7 @@
 2. Run the following command:
 
 ```
-$ go get github.com/u1and0/tokenize-split
+$ go install github.com/u1and0/tokenize-split@latest
 ```
 
 3. The `tokenize-split` command should now be available in your `$GOPATH/bin` directory.
